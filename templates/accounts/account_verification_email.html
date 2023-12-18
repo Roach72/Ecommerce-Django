@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{user.first_name}} I hope I find you well,
+
+Please click on the link below to confirm.
+http://{{ domain }}{% url 'resetpassword_valldate' uid=uid token=token %}
+
+if you think it's not you, Please ignore this email.
+
+{% endautoescape %}
