@@ -19,6 +19,9 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.http import HttpResponse
 
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+
 
 User = get_user_model()
 
@@ -73,6 +76,17 @@ def user_login(request):
             # مصادقة المستخدم
             if user.check_password(password):
                 # في حالة نجاح المصادقة، قم بتسجيل الدخول
+                try:
+                    cart = Cart.objects.get(cart_id=_cart_id(request))
+                    existing_cart_items = CartItem.objects.filter(cart=cart)
+                    if existing_cart_items:
+                        cart_item = CartItem.objects.filter(cart=cart)
+
+                        for item in cart_item:
+                            item.user = user
+                            item.save()
+                except:
+                    pass
                 login(request, user)
                 messages.success(request, 'Login is Successful')
                 return redirect('dashboard')
